@@ -1,25 +1,15 @@
 ﻿using System;
+using System.Reflection;
 
 namespace CSharpLab1
 {
-    public enum TimeFrame
-    {
-        Year,
-        TwoYears,
-        Long
-    };
     public class Paper
     {
         public string Title { get; set; }
         public Person Person { get; set; }
         public DateTime DateOfPublishing { get; set; }
 
-        public Paper()
-        {
-            Title = "C# tutorial";
-            Person = new Person();
-            DateOfPublishing = DateTime.Now;
-        }
+        public Paper() : this(title: "C# tutorial", person: new Person(), dateOfPublishing: DateTime.Now){ }
         public Paper(string title, Person person, DateTime dateOfPublishing)
         {
             Title = title;
@@ -28,7 +18,7 @@ namespace CSharpLab1
         }
         public override string ToString()
         {
-            return $"\nPaper: \ntitle: {Title}\n{Person}\ndate of publishing: {DateOfPublishing}\n";
+            return $"\nPaper: \ntitle: {Title}\ndate of publishing: {DateOfPublishing}\n{Person}\n";
         }
     }
 }

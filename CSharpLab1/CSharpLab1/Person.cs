@@ -24,17 +24,12 @@ namespace CSharpLab1
             set { _dateOfBirth = value; }
         }
 
-        public Person()
-        {
-            _name = "James";
-            _surname = "Bay";
-            _dateOfBirth = DateTime.Now;
-        }
+        public Person() : this(name: "James", surname: "Bay", dateTime: DateTime.Now){ }
         public Person(String name, String surname, DateTime dateTime)
         {
-            _name = name;
-            _surname = surname;
-            _dateOfBirth = dateTime;
+            Name = name;
+            Surname = surname;
+            DateOfBirth = dateTime;
         }
         public int YearOfBirth
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace CSharpLab1
 {
@@ -18,29 +19,21 @@ namespace CSharpLab1
         public Paper[] Papers { get { return _papers; } set { _papers = value; } }
         public Paper GetLastArticle
         {
-            get { return (Papers.Length != 0) ? Papers[Papers.Length - 1] : throw new NullReferenceException(); }
+            get => Papers?[Papers.Length - 1];
         }
         public bool this[TimeFrame duration] => TimeOfExplore.Equals(duration);
-        public ResearchTeam()
-        {
-            _exploreTheme = "C#";
-            _organization = "IT";
-            _registrationNumber = 1;
-            _timeOfExplore = TimeFrame.Year;
-            _papers = new Paper[] { new Paper("Test", new Person(), DateTime.Now) };
-        }
+        public ResearchTeam() : this(exploreTheme: "C#", organization: "IT", registrationNumber: 1, timeOfExplore: TimeFrame.Year, papersList: new Paper[] { new Paper("Test", new Person(), DateTime.Now) }) { }
         public ResearchTeam(string exploreTheme, string organization, int registrationNumber, TimeFrame timeOfExplore, Paper[] papersList)
         {
-            _exploreTheme = exploreTheme;
-            _organization = organization;
-            _registrationNumber = registrationNumber;
-            _timeOfExplore = timeOfExplore;
-            _papers = papersList;
+            ExploreTheme = exploreTheme;
+            Organization = organization;
+            RegistrationNumber = registrationNumber;
+            TimeOfExplore = timeOfExplore;
+            Papers = papersList;
         }
-
         public void AddPapers(params Paper[] papersList)
         {
-            List<Paper> list = new List<Paper>();
+            var list = new List<Paper>();
             list.AddRange(Papers);
             list.AddRange(papersList);
             Papers = list.ToArray();
@@ -58,12 +51,12 @@ namespace CSharpLab1
 
         private string GetStringOfPapers()
         {
-            String list = "";
+            StringBuilder stringBuilder = new StringBuilder();
             foreach (var p in Papers)
             {
-                list += p.ToString();
+                stringBuilder.Append(p.ToString());
             }
-            return list;
+            return stringBuilder.ToString();
         }
     }
 }
