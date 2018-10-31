@@ -5,13 +5,13 @@ using System.Text;
 
 namespace CSharpLab1.Models
 {
-    public class ResearchTeam : Team, IEnumerable
+    public class ResearchTeam : Team, IEnumerable,IComparer<ResearchTeam>
     {
         public string ExploreTheme { get; set; }
         public TimeFrame TimeOfExplore { get; set; }
-        public ArrayList Papers { get; set; }
-        public ArrayList Persons { get; set; }
-        public Paper GetLastArticle => (Paper) Papers?[Papers.Count - 1];
+        public List<Person> Persons { get; set; }
+        public List<Paper> Papers { get; set; }
+        public Paper GetLastArticle => Papers?[Papers.Count - 1];
         public Team GetTeam
         {
             get => this;
@@ -28,14 +28,15 @@ namespace CSharpLab1.Models
             ExploreTheme = exploreTheme;
             Name = nameOfOrganization;
             TimeOfExplore = timeOfExplore;
-            Papers = new ArrayList();
-            Persons = new ArrayList();
+            Papers = new List<Paper>();
+            Persons = new List<Person>();
         }
+
         public void AddPapers(params Paper[] papersList)
         {
             Papers.AddRange(papersList);
         }
-        public void AddPerson(params Person[] personsList)
+        public void AddPersons(params Person[] personsList)
         {
             Persons.AddRange(personsList);
         }
@@ -72,6 +73,7 @@ namespace CSharpLab1.Models
         {
             return !(researchTeam1 == researchTeam2);
         }
+
         public IEnumerable<Paper> GetPublishingInRecentYear(int n)
         {
             if (n < 0)
@@ -111,6 +113,7 @@ namespace CSharpLab1.Models
                     yield return person;
             }
         }
+
         public ResearchTeam ShallowCopy()
         {
             return (ResearchTeam)MemberwiseClone();
@@ -125,36 +128,81 @@ namespace CSharpLab1.Models
             copy.Persons = GetClonePersons();
             return copy;
         }
-        private ArrayList GetClonePapers()
+
+        private List<Paper> GetClonePapers()
         {
-            var list = new ArrayList();
+            var list = new List<Paper>();
             foreach (Paper p in Papers)
             {
                 list.Add(p.DeepCopy());
             }
             return list;
         }
-        private ArrayList GetClonePersons()
+        private List<Person> GetClonePersons()
         {
-            var list = new ArrayList();
+            var list = new List<Person>();
             foreach (Person p in Persons)
             {
                 list.Add(p.DeepCopy());
             }
             return list;
         }
+
         public override int GetHashCode()
         {
             var hashCode = -703031920;
             hashCode = hashCode * -1521134295 + base.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ExploreTheme);
             hashCode = hashCode * -1521134295 + TimeOfExplore.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<ArrayList>.Default.GetHashCode(Papers);
-            hashCode = hashCode * -1521134295 + EqualityComparer<ArrayList>.Default.GetHashCode(Persons);
+            hashCode = (int) (hashCode * -1521134295 + GetHashCodePapers());
+            hashCode = (int) (hashCode * -1521134295 + GetHashCodePersons());
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             return hashCode;
         }
+        private long GetHashCodePapers()
+        {
+            long lg = 0;
+            foreach (Paper paper in Papers)
+            {
+                lg += paper.GetHashCode();
+            }
+            return lg;
+        }
+        private long GetHashCodePersons()
+        {
+            long lg = 0;
+            foreach (Person person in Persons)
+            {
+                lg += person.GetHashCode();
+            }
+            return lg;
+        }
 
+        public int Compare(ResearchTeam x, ResearchTeam y)
+        {
+            //if (ReferenceEquals(x, y))
+            //    return 0;
+            //if (ReferenceEquals(x, null))
+            //    return 1;
+            //if (ReferenceEquals(y, null))
+            //    return -1;
+
+            if (x.ExploreTheme.Length > y.ExploreTheme.Length)
+                return 1;
+            if (x.ExploreTheme.Length < y.ExploreTheme.Length)
+                return -1;
+            
+            return 0;  
+        }
+
+        public override string ToString()
+        {
+            return $"\nResearch Team: \nexplore theme: {ExploreTheme}\n" +
+                   $"\nName of organization: {Name}" +
+                   $"\ntime of explore: {TimeOfExplore}\n" +
+                   $"Papers: {GetStringOfPapers()}\n" +
+                   $"Persons: {GetStringOfPersons()}\n";
+        }
         private string GetStringOfPapers()
         {
             StringBuilder stringBuilder = new StringBuilder();
@@ -173,19 +221,13 @@ namespace CSharpLab1.Models
             }
             return stringBuilder.ToString();
         }
-        public override string ToString()
-        {
-            return $"\nResearch Team: \nexplore theme: {ExploreTheme}\n" +
-                   $"\nName of organization: {Name}" +
-                   $"\ntime of explore: {TimeOfExplore}\n" +
-                   $"Papers: {GetStringOfPapers()}\n" +
-                   $"Persons: {GetStringOfPersons()}\n";
-        }
         public virtual string ToShortString()
         {
             return $"\nResearch Team: \nexplore theme: {ExploreTheme}\n" +
-                   $"\nName of organization: {Name}" +
-                   $"time of explore: {TimeOfExplore}\n";
+                   $"\nName of organization: {Name}\n" +
+                   $"time of explore: {TimeOfExplore}\n" +
+                   $"Number of publishing: {Papers.Count}\n" +
+                   $"Number of participants: {Persons.Count}";
         }
     }
 }

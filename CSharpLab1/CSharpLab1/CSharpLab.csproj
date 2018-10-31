@@ -66,8 +66,13 @@
     <Compile Include="Interfaces\INameAndCopy.cs" />
     <Compile Include="Models\Paper.cs" />
     <Compile Include="Models\Person.cs" />
-    <Compile Include="Models\Program.cs" />
-    <Compile Include="Models\ResearchTeamEnumerator.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ResearchTeamCollection.cs" />
+    <Compile Include="ResearchTeamComparer.cs" />
+    <Compile Include="ResearchTeamEnumerator.cs" />
+    <Compile Include="TestCollections.cs" />
+    <Compile Include="TKey.cs" />
+    <Compile Include="TValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\ResearchTeam.cs" />
     <Compile Include="Support.cs" />

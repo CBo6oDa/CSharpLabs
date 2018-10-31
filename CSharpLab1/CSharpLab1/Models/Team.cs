@@ -4,7 +4,7 @@ using CSharpLab1.Interfaces;
 
 namespace CSharpLab1.Models
 {
-    public class Team : INameAndCopy
+    public class Team : INameAndCopy,IComparable
     {
         private int _registrationNumber;
         public int RegistrationNumber
@@ -23,12 +23,14 @@ namespace CSharpLab1.Models
             }
         }
         public string Name { get; set; }
+
         public Team() : this(name: "Fantastic fourth", registrationNumber: 1) {}
         public Team(string name, int registrationNumber)
         {
             RegistrationNumber = registrationNumber;
             Name = name;
         }
+
         public virtual object DeepCopy()
         {
             Team copy = (Team)MemberwiseClone();
@@ -41,7 +43,6 @@ namespace CSharpLab1.Models
                    RegistrationNumber == team.RegistrationNumber &&
                    Name == team.Name;
         }
-
         public static bool operator ==(Team team1, Team team2)
         {
             if (ReferenceEquals(team1, team2))
@@ -65,6 +66,16 @@ namespace CSharpLab1.Models
             hashCode = hashCode * -1521134295 + RegistrationNumber.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             return hashCode;
+        }
+
+        public int CompareTo(object obj)
+        {
+            Team team = obj as Team;
+            if (team != null)
+            {
+                return RegistrationNumber.CompareTo(team.RegistrationNumber);
+            }
+            throw new Exception("These objects cannot be compared!");
         }
         public override string ToString()
         {

@@ -8,9 +8,9 @@ namespace CSharpLab1.Models
     public class ResearchTeamEnumerator : IEnumerator
     {
         public int CurrentIndex { get; set; } = -1;
-        public ArrayList Persons { get; set; }
-        public ArrayList Papers { get; set; }
-        public ResearchTeamEnumerator(ArrayList papers, ArrayList persons)
+        public List<Person> Persons { get; set; }
+        public List<Paper> Papers { get; set; }
+        public ResearchTeamEnumerator(List<Person> persons, List<Paper> papers)
         {
             Persons = persons;
             Papers = papers;

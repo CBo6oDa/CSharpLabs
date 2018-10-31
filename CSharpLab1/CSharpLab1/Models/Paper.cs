@@ -24,9 +24,21 @@ namespace CSharpLab1.Models
                    Person.Equals(Person, paper.Person) &&
                    DateOfPublishing == paper.DateOfPublishing;
         }
-        public static bool ArrayEquals(ArrayList papers1, ArrayList papers2)
+        public static bool ArrayEquals(List<Paper> papers1, List<Paper> papers2)
         {
-            if (papers1?.Count != papers2?.Count || papers1 == null && papers2 == null)
+            if (papers1 == null && papers2 == null)
+            {
+                return true;
+            }
+            if (ReferenceEquals(papers1, null))
+            {
+                return false;
+            }
+            if (ReferenceEquals(papers2, null))
+            {
+                return false;
+            }
+            if (papers1.Count != papers2.Count)
                 return false;
 
             for (int i = 0; i < papers1.Count; i++)
