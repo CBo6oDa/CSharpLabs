@@ -1,81 +1,97 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using static CSharpLab1.Models.ResearchTeam;
 
 namespace CSharpLab1.Models
 {
     public class Program
     {
-        private static Paper[][] GetJuggedArray(int n, int m)
+
+        public static TeamsJournal teamsJournal1 { get; set; }
+        public static TeamsJournal teamsJournal2 { get; set; }
+        //private static Paper[][] GetJuggedArray(int n, int m)
+        //{
+        //    Paper[][] juggedArray = new Paper[n][];
+        //    int count = n * m;
+        //    int lenght = 1;
+        //    for (int i = 0; i < juggedArray.Length; i++)
+        //    {
+        //        if (i == juggedArray.Length - 1 && lenght <= count)
+        //        {
+        //            juggedArray[i] = new Paper[count];
+        //        }
+        //        else
+        //        {
+        //            juggedArray[i] = new Paper[lenght];
+        //        }
+        //        count -= lenght;
+        //        lenght++;
+
+        //        for (int j = 0; j < juggedArray[i].Length; j++)
+        //        {
+        //            juggedArray[i][j] = new Paper();
+        //        }
+        //    }
+        //    return juggedArray;
+        //}
+        public static void Show_Message(object source, TeamListHandlerEventArgs args)
         {
-            Paper[][] juggedArray = new Paper[n][];
-            int count = n * m;
-            int lenght = 1;
-            for (int i = 0; i < juggedArray.Length; i++)
+            TeamsJournalEntry teamsJournalEntry = new TeamsJournalEntry(name: args.NameOfCollection,change:args.TypeOfChange,index:args.IndexOfElement);
+
+            if (teamsJournalEntry.NameOfCollection == "researchTeam1")
             {
-                if (i == juggedArray.Length - 1 && lenght <= count)
-                {
-                    juggedArray[i] = new Paper[count];
-                }
-                else
-                {
-                    juggedArray[i] = new Paper[lenght];
-                }
-                count -= lenght;
-                lenght++;
-
-                for (int j = 0; j < juggedArray[i].Length; j++)
-                {
-                    juggedArray[i][j] = new Paper();
-                }
+                teamsJournal1.Journal.Add(teamsJournalEntry);
             }
-            return juggedArray;
+            teamsJournal2.Journal.Add(teamsJournalEntry);
+
+            //Console.WriteLine(args.ToString());
         }
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            
-            ResearchTeamCollection researchTeam = new ResearchTeamCollection();
-            researchTeam.AddDefaults();
-            researchTeam.SortByCountOfPublishing();
-            TestCollections.GetResearchTeam(10);
-
-            Console.WriteLine();
-            Console.ReadLine();
 
 
 
+            ResearchTeamCollection researchTeam1 = new ResearchTeamCollection();
+            ResearchTeamCollection researchTeam2 = new ResearchTeamCollection();
+            teamsJournal1 = new TeamsJournal();
+            teamsJournal2 = new TeamsJournal();
+
+            teamsJournal1.NameOfJournal = nameof(teamsJournal1);
+            teamsJournal2.NameOfJournal = nameof(teamsJournal2);
+            researchTeam1.NameOfCollection = nameof(researchTeam1);
+            researchTeam2.NameOfCollection = nameof(researchTeam2);
+
+            researchTeam1.ResearchTeamAdded += Show_Message;
+            researchTeam1.ResearchTeamInserted += Show_Message;
+            researchTeam2.ResearchTeamAdded += Show_Message;
+            researchTeam2.ResearchTeamInserted += Show_Message;
+
+            researchTeam1.InsertAt(0, new ResearchTeam());
+            researchTeam1.InsertAt(0, new ResearchTeam());
+            researchTeam2.InsertAt(0, new ResearchTeam());
+            researchTeam2.InsertAt(1, new ResearchTeam());
+            researchTeam2.InsertAt(1, new ResearchTeam());
+            researchTeam2.InsertAt(3, new ResearchTeam());
+            researchTeam2.InsertAt(4, new ResearchTeam());
+            researchTeam2.InsertAt(6, new ResearchTeam());
+
+            Console.WriteLine("\n" + teamsJournal1);
+            Console.WriteLine(teamsJournal2.ToString());
+
+            // LAB3 
+            //ResearchTeamCollection researchTeam = new ResearchTeamCollection();
+            //researchTeam.AddDefaults();
+            //researchTeam.SortByCountOfPublishing();
+            //TestCollections.GetResearchTeam(10);
+
+            //Console.WriteLine();
+            //Console.ReadLine();
 
 
+            //LAB1
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //lab1
 
             //ResearchTeam researchTeam2 = new ResearchTeam();
             //ResearchTeam researchTeam3 = (ResearchTeam)researchTeam2.DeepCopy();
@@ -155,7 +171,7 @@ namespace CSharpLab1.Models
 
 
 
-            //lab2
+            //LAB1
 
 
 

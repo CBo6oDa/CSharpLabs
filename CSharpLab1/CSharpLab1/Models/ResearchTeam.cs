@@ -180,13 +180,6 @@ namespace CSharpLab1.Models
 
         public int Compare(ResearchTeam x, ResearchTeam y)
         {
-            //if (ReferenceEquals(x, y))
-            //    return 0;
-            //if (ReferenceEquals(x, null))
-            //    return 1;
-            //if (ReferenceEquals(y, null))
-            //    return -1;
-
             if (x.ExploreTheme.Length > y.ExploreTheme.Length)
                 return 1;
             if (x.ExploreTheme.Length < y.ExploreTheme.Length)
