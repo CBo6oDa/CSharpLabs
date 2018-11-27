@@ -1,12 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 namespace CSharpLab1.Models
 {
+    [DataContract]
     public class Person
     {
+        [DataMember]
         public string Name { get; set; }
+        [DataMember]
         public string Surname { get; set; }
+        [DataMember]
         public DateTime DateOfBirth { get; set; }
         public Person() : this(name: "James", surname: "Bay", dateTime: new DateTime(2018,01,01,12,0,0)){ }
         public Person(String name, String surname, DateTime dateTime)

@@ -8,9 +8,7 @@ namespace CSharpLab1.Models
 {
     public class Program
     {
-
-        public static TeamsJournal teamsJournal1 { get; set; }
-        public static TeamsJournal teamsJournal2 { get; set; }
+        #region Lab1
         //private static Paper[][] GetJuggedArray(int n, int m)
         //{
         //    Paper[][] juggedArray = new Paper[n][];
@@ -36,50 +34,90 @@ namespace CSharpLab1.Models
         //    }
         //    return juggedArray;
         //}
-        public static void Show_Message(object source, TeamListHandlerEventArgs args)
-        {
-            TeamsJournalEntry teamsJournalEntry = new TeamsJournalEntry(name: args.NameOfCollection,change:args.TypeOfChange,index:args.IndexOfElement);
+        #endregion
+        #region  Lab4
 
-            if (teamsJournalEntry.NameOfCollection == "researchTeam1")
-            {
-                teamsJournal1.Journal.Add(teamsJournalEntry);
-            }
-            teamsJournal2.Journal.Add(teamsJournalEntry);
+        //public static TeamsJournal teamsJournal1 { get; set; }
+        //public static TeamsJournal teamsJournal2 { get; set; }
+        //public static void Show_Message(object source, TeamListHandlerEventArgs args)
+        //{
+        //    TeamsJournalEntry teamsJournalEntry = new TeamsJournalEntry(name: args.NameOfCollection, change: args.TypeOfChange, index: args.IndexOfElement);
 
-            //Console.WriteLine(args.ToString());
-        }
+        //    if (teamsJournalEntry.NameOfCollection == "researchTeam1")
+        //    {
+        //        teamsJournal1.Journal.Add(teamsJournalEntry);
+        //    }
+        //    teamsJournal2.Journal.Add(teamsJournalEntry);
+
+        //    Console.WriteLine(args.ToString());
+        //}
+        #endregion
+
         public static void Main(string[] args)
         {
+            #region Lab5
 
+            ResearchTeam researchTeam = new ResearchTeam();
+            Paper paper = new Paper();
+            Person person = new Person("PERSON","SURNAME",new DateTime(2018,11,12));
 
+            researchTeam.AddPersons(person);
+            researchTeam.AddPersons(person);
+            researchTeam.AddPapers(paper);
 
-            ResearchTeamCollection researchTeam1 = new ResearchTeamCollection();
-            ResearchTeamCollection researchTeam2 = new ResearchTeamCollection();
-            teamsJournal1 = new TeamsJournal();
-            teamsJournal2 = new TeamsJournal();
+            var deepCopy = DeepCopy<ResearchTeam>(researchTeam);
 
-            teamsJournal1.NameOfJournal = nameof(teamsJournal1);
-            teamsJournal2.NameOfJournal = nameof(teamsJournal2);
-            researchTeam1.NameOfCollection = nameof(researchTeam1);
-            researchTeam2.NameOfCollection = nameof(researchTeam2);
+            researchTeam.Name = "a";
+            Console.WriteLine(researchTeam.Name);
+            Console.WriteLine(deepCopy.Name);
 
-            researchTeam1.ResearchTeamAdded += Show_Message;
-            researchTeam1.ResearchTeamInserted += Show_Message;
-            researchTeam2.ResearchTeamAdded += Show_Message;
-            researchTeam2.ResearchTeamInserted += Show_Message;
+            if (researchTeam.Save("TEST"))
+            {
+                Console.WriteLine("File is Saved");
+            }
+            ResearchTeam loadedObject = new ResearchTeam();
+            if (loadedObject.Load("TEST"))
+            {
+                Console.WriteLine("File is Readed");
+            }
 
-            researchTeam1.InsertAt(0, new ResearchTeam());
-            researchTeam1.InsertAt(0, new ResearchTeam());
-            researchTeam2.InsertAt(0, new ResearchTeam());
-            researchTeam2.InsertAt(1, new ResearchTeam());
-            researchTeam2.InsertAt(1, new ResearchTeam());
-            researchTeam2.InsertAt(3, new ResearchTeam());
-            researchTeam2.InsertAt(4, new ResearchTeam());
-            researchTeam2.InsertAt(6, new ResearchTeam());
+            ResearchTeam researchTeamStatic = new ResearchTeam();
+            ResearchTeam.Load("TEST",researchTeamStatic);
+            Console.WriteLine(researchTeamStatic);
+            ResearchTeam.Save("TEST2", deepCopy);
 
-            Console.WriteLine("\n" + teamsJournal1);
-            Console.WriteLine(teamsJournal2.ToString());
+            researchTeam.AddPaperFromConsole();
+            researchTeam.Save("TEST2");
+            #endregion
+            #region lab4
+            //ResearchTeamCollection researchTeam1 = new ResearchTeamCollection();
+            //ResearchTeamCollection researchTeam2 = new ResearchTeamCollection();
+            //teamsJournal1 = new TeamsJournal();
+            //teamsJournal2 = new TeamsJournal();
 
+            //teamsJournal1.NameOfJournal = nameof(teamsJournal1);
+            //teamsJournal2.NameOfJournal = nameof(teamsJournal2);
+            //researchTeam1.NameOfCollection = nameof(researchTeam1);
+            //researchTeam2.NameOfCollection = nameof(researchTeam2);
+
+            //researchTeam1.ResearchTeamAdded += Show_Message;
+            //researchTeam1.ResearchTeamInserted += Show_Message;
+            //researchTeam2.ResearchTeamAdded += Show_Message;
+            //researchTeam2.ResearchTeamInserted += Show_Message;
+
+            //researchTeam1.InsertAt(0, new ResearchTeam());
+            //researchTeam1.InsertAt(0, new ResearchTeam());
+            //researchTeam2.InsertAt(0, new ResearchTeam());
+            //researchTeam2.InsertAt(1, new ResearchTeam());
+            //researchTeam2.InsertAt(1, new ResearchTeam());
+            //researchTeam2.InsertAt(3, new ResearchTeam());
+            //researchTeam2.InsertAt(4, new ResearchTeam());
+            //researchTeam2.InsertAt(6, new ResearchTeam());
+
+            //Console.WriteLine("\n" + teamsJournal1);
+            //Console.WriteLine(teamsJournal2.ToString());
+            #endregion
+            #region lab3
             // LAB3 
             //ResearchTeamCollection researchTeam = new ResearchTeamCollection();
             //researchTeam.AddDefaults();
@@ -88,10 +126,9 @@ namespace CSharpLab1.Models
 
             //Console.WriteLine();
             //Console.ReadLine();
-
-
-            //LAB1
-
+            #endregion
+            #region lab2
+            //LAB2
 
             //ResearchTeam researchTeam2 = new ResearchTeam();
             //ResearchTeam researchTeam3 = (ResearchTeam)researchTeam2.DeepCopy();
@@ -167,13 +204,9 @@ namespace CSharpLab1.Models
             //{
             //    Console.WriteLine(enumerator.Current);
             //}
-
-
-
-
+            #endregion
+            #region lab1
             //LAB1
-
-
 
             //Console.WriteLine("Persons with more than one paper: ");
             //foreach (Person pn in researchTeamEnumerator.GetPersonsWithMoreThanOnePaper())
@@ -243,6 +276,8 @@ namespace CSharpLab1.Models
             //Console.WriteLine(p.ToString());
             //Console.WriteLine(paper.ToString());
             //Console.WriteLine(researchTeam.ToString());
+            #endregion
+
             Console.ReadLine();
         }
     }

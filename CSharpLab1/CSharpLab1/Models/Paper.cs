@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 namespace CSharpLab1.Models
 {
+    [DataContract]
     public class Paper
     {
+        [DataMember]
         public string Title { get; set; }
+        [DataMember]
         public Person Person { get; set; }
+        [DataMember]
         public DateTime DateOfPublishing { get; set; }
         public Paper() : this(title: "C# tutorial", person: new Person(), dateOfPublishing: new DateTime(2018, 01, 01, 12, 0, 0)) { }
         public Paper(string title, Person person, DateTime dateOfPublishing)

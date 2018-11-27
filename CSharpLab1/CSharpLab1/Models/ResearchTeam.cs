@@ -2,14 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 
 namespace CSharpLab1.Models
 {
+    [DataContract]
     public class ResearchTeam : Team, IEnumerable,IComparer<ResearchTeam>
     {
+        [DataMember]
         public string ExploreTheme { get; set; }
+        [DataMember]
         public TimeFrame TimeOfExplore { get; set; }
+        [DataMember]
         public List<Person> Persons { get; set; }
+        [DataMember]
         public List<Paper> Papers { get; set; }
         public Paper GetLastArticle => Papers?[Papers.Count - 1];
         public Team GetTeam
@@ -21,6 +30,7 @@ namespace CSharpLab1.Models
                 RegistrationNumber = value.RegistrationNumber;
             }
         }
+        [DataMember]
         public new string Name { get => base.Name; set => base.Name = value; }
         public ResearchTeam() : this(exploreTheme: "C#", nameOfOrganization: "CHNU", timeOfExplore: TimeFrame.Year) {}
         public ResearchTeam(string exploreTheme,string nameOfOrganization, TimeFrame timeOfExplore)
@@ -113,7 +123,6 @@ namespace CSharpLab1.Models
                     yield return person;
             }
         }
-
         public ResearchTeam ShallowCopy()
         {
             return (ResearchTeam)MemberwiseClone();
@@ -128,7 +137,6 @@ namespace CSharpLab1.Models
             copy.Persons = GetClonePersons();
             return copy;
         }
-
         private List<Paper> GetClonePapers()
         {
             var list = new List<Paper>();
@@ -147,7 +155,6 @@ namespace CSharpLab1.Models
             }
             return list;
         }
-
         public override int GetHashCode()
         {
             var hashCode = -703031920;
@@ -187,7 +194,6 @@ namespace CSharpLab1.Models
             
             return 0;  
         }
-
         public override string ToString()
         {
             return $"\nResearch Team: \nexplore theme: {ExploreTheme}\n" +
@@ -221,6 +227,233 @@ namespace CSharpLab1.Models
                    $"time of explore: {TimeOfExplore}\n" +
                    $"Number of publishing: {Papers.Count}\n" +
                    $"Number of participants: {Persons.Count}";
+        }
+        public void Add(object o)
+        {
+            if (o as Paper != null)
+            {
+                Papers.Add(o as Paper);
+            }
+            else if (o as Person != null)
+            {
+                Persons.Add((o as Person));
+            }
+        }
+        public static T DeepCopy<T>(object obj) where T : class
+        {
+            T serialisedObject = obj as T;
+            if (serialisedObject != null)
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(T));
+                    try
+                    {
+                        ser.WriteObject(ms, serialisedObject);
+                        ms.Position = 0;
+                        return ser.ReadObject(ms) as T;
+                    }
+                    catch (InvalidDataContractException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    catch (SerializationException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    finally
+                    {
+                        ms.Close();
+                    }
+                }
+            }
+            throw new ArgumentException($"I cannot convert { nameof(serialisedObject) } to ResearchTeam");
+        }
+
+        public bool Save(string fileName)
+        {
+            string fileLocation = @"D:\";
+            string fileFormat = ".txt";
+
+            ResearchTeam researchTeam = new ResearchTeam(ExploreTheme, Name, TimeOfExplore);
+            researchTeam.Papers = Papers;
+            researchTeam.Persons = Persons;
+
+            MemoryStream ms = new MemoryStream();
+            try
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ResearchTeam));
+                ser.WriteObject(ms, researchTeam);
+                byte[] json = ms.ToArray();
+
+                var objectToJson = Encoding.UTF8.GetString(json, 0, json.Length);
+                FileStream fstream = new FileStream(fileLocation + fileName + fileFormat, FileMode.OpenOrCreate);
+                fstream.SetLength(0);
+                byte[] array = Encoding.Default.GetBytes(objectToJson);
+                fstream.Write(array, 0, array.Length);
+                fstream.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                ms.Close();
+            }
+            return false;
+        }
+
+        public bool Load(string fileName)
+        {
+            string fileLocation = @"D:\";
+            string fileFormat = ".txt";
+
+            try
+            {
+                using (FileStream fstream = File.OpenRead(fileLocation + fileName + fileFormat))
+                {
+                    byte[] array = new byte[fstream.Length];
+                    fstream.Read(array, 0, array.Length);
+                    string json = Encoding.Default.GetString(array);
+
+                    MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
+                    ResearchTeam deserializedTeam = new ResearchTeam();
+                    DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedTeam.GetType());
+                    deserializedTeam = ser.ReadObject(ms) as ResearchTeam;
+
+                    Name = deserializedTeam.Name;
+                    ExploreTheme = deserializedTeam.ExploreTheme;
+                    TimeOfExplore = deserializedTeam.TimeOfExplore;
+                    RegistrationNumber = deserializedTeam.RegistrationNumber;
+                    Papers = deserializedTeam.Papers;
+                    Persons = deserializedTeam.Persons;
+
+                    ms.Close();
+                    fstream.Close();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return false;
+        }
+
+        public static bool Load(string fileName, ResearchTeam researchTeam)
+        {
+            string fileLocation = @"D:\";
+            string fileFormat = ".txt";
+
+            try
+            {
+                using (FileStream fstream = File.OpenRead(fileLocation + fileName + fileFormat))
+                {
+                    byte[] array = new byte[fstream.Length];
+                    fstream.Read(array, 0, array.Length);
+                    string json = Encoding.Default.GetString(array);
+
+                    MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
+                    ResearchTeam deserializedTeam = new ResearchTeam();
+                    DataContractJsonSerializer ser = new DataContractJsonSerializer(deserializedTeam.GetType());
+                    deserializedTeam = ser.ReadObject(ms) as ResearchTeam;
+
+                    researchTeam.Name = deserializedTeam.Name;
+                    researchTeam.ExploreTheme = deserializedTeam.ExploreTheme;
+                    researchTeam.TimeOfExplore = deserializedTeam.TimeOfExplore;
+                    researchTeam.RegistrationNumber = deserializedTeam.RegistrationNumber;
+                    researchTeam.Papers = deserializedTeam.Papers;
+                    researchTeam.Persons = deserializedTeam.Persons;
+
+                    ms.Close();
+                    fstream.Close();
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return false;
+        }
+
+        public static bool Save(string fileName, ResearchTeam saveResearchTeam)
+        {
+            string fileLocation = @"D:\";
+            string fileFormat = ".txt";
+
+            ResearchTeam researchTeam = new ResearchTeam(saveResearchTeam.ExploreTheme, saveResearchTeam.Name, saveResearchTeam.TimeOfExplore);
+            researchTeam.Papers = saveResearchTeam.Papers;
+            researchTeam.Persons = saveResearchTeam.Persons;
+
+            MemoryStream ms = new MemoryStream();
+            try
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(ResearchTeam));
+                ser.WriteObject(ms, researchTeam);
+                byte[] json = ms.ToArray();
+
+                var objectToJson = Encoding.UTF8.GetString(json, 0, json.Length);
+                FileStream fstream = new FileStream(fileLocation + fileName + fileFormat, FileMode.OpenOrCreate);
+                fstream.SetLength(0);
+                byte[] array = Encoding.Default.GetBytes(objectToJson);
+                fstream.Write(array, 0, array.Length);
+                fstream.Close();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                ms.Close();
+            }
+            return false;
+        }
+
+        public bool AddPaperFromConsole()
+        {
+            Console.WriteLine("Введiть данi для об'єкту Paper наступного формату: " +
+                              "назва публiкацiї;дата публiкацiї;Автор: iм'я;прiзвище;дата народження(формат: YYYY:MM:DD)\n" +
+                              "Приклад: C# tutorial;2018-01-11;James;Bay;1990-04-23");
+
+            Person person = new Person();
+            Paper paper = new Paper();
+            var input = Console.ReadLine();
+            string[] splitedString = new string[]{""};
+
+            if (input != null)
+            {
+                splitedString = input.Split(';');
+            }
+
+            try
+            {
+                paper.Title = splitedString[0];
+                var yearOfPublishing = int.Parse(splitedString[1].Split('-')[0]);
+                var monthOfPublishing = int.Parse(splitedString[1].Split('-')[1]);
+                var dayOfPublishing = int.Parse(splitedString[1].Split('-')[2]);
+                paper.DateOfPublishing = new DateTime(yearOfPublishing, monthOfPublishing, dayOfPublishing);
+               
+                person.Name = splitedString[2];
+                person.Surname = splitedString[3];
+                var yearOfBirth = int.Parse(splitedString[4].Split('-')[0]);
+                var monthOfBirth = int.Parse(splitedString[4].Split('-')[1]);
+                var dayOfBirth = int.Parse(splitedString[4].Split('-')[2]);
+                person.DateOfBirth = new DateTime(yearOfBirth, monthOfBirth, dayOfBirth);
+                paper.Person = person;
+                Papers.Add(paper);
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return false;
         }
     }
 }

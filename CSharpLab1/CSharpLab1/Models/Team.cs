@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using CSharpLab1.Interfaces;
 
 namespace CSharpLab1.Models
 {
+    [DataContract]
     public class Team : INameAndCopy,IComparable
     {
         private int _registrationNumber;
+
+        [DataMember]
         public int RegistrationNumber
         {
             get => _registrationNumber;
@@ -23,7 +28,6 @@ namespace CSharpLab1.Models
             }
         }
         public string Name { get; set; }
-
         public Team() : this(name: "Fantastic fourth", registrationNumber: 1) {}
         public Team(string name, int registrationNumber)
         {

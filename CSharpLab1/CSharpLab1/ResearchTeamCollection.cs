@@ -56,7 +56,6 @@ namespace CSharpLab1.Models
             researchTeam.AddPapers(paper);
             researchTeam.RegistrationNumber = 6;
             ResearchTeams.Add(researchTeam);
-            
 
             ResearchTeamAdded(researchTeam, new TeamListHandlerEventArgs(NameOfCollection, "Added", ResearchTeams.Count - 1));
 
@@ -132,9 +131,9 @@ namespace CSharpLab1.Models
         {
             get
             {
-                return (index > 0)
+                return (index >= 0 && index < ResearchTeams.Count)
                     ? ResearchTeams[index]
-                    : throw new ArgumentOutOfRangeException("Index has to be > 0");
+                    : throw new ArgumentOutOfRangeException($"Index has to be > 0 && index < ResearchTeams.Count");
             }
             set
             {
