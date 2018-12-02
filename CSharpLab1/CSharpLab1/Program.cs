@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using static CSharpLab1.Models.ResearchTeam;
+using CSharpLab1.ReflectionTask;
+using CSharpLab1.ReflectionTask.Models;
 
 namespace CSharpLab1.Models
 {
@@ -52,42 +50,84 @@ namespace CSharpLab1.Models
         //    Console.WriteLine(args.ToString());
         //}
         #endregion
-
+        #region Lab6
+        
+        #endregion
         public static void Main(string[] args)
         {
+            #region Lab6
+            ConsoleKey readKey;
+            DateTime dateTime = DateTime.Now;
+            if (dateTime.DayOfWeek != DayOfWeek.Sunday)
+            {
+                Human human = new Human();
+                Human[] humans = {new Student(), new Botan(), new Girl(), new PrettyGirl(), new SmartGirl()};
+                do
+                {
+                    Console.WriteLine("<-----------------------------------------------");
+                    Random random = new Random();
+                    var firstIndex = random.Next(humans.Length);
+                    var secondIndex = random.Next(humans.Length);
+
+                    Console.WriteLine("First instance: " + humans[firstIndex].GetType().Name);
+                    Console.WriteLine("Second instance: " + humans[secondIndex].GetType().Name + "\n");
+                    try
+                    {
+                        Human.ValidateCouple(humans[firstIndex], humans[secondIndex]);
+                    }
+                    catch (InvalidCoupleArguments e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+
+                    var child = human.Couple(humans[firstIndex], humans[secondIndex]);
+
+                    Console.WriteLine("\nName: " + child.GetType().GetProperty("Name")?.GetValue(child));
+                    Console.WriteLine("Surname: " + child.GetType().GetProperty("Surname")?.GetValue(child));
+                    Console.WriteLine("ChildType: " + child);
+                    Console.WriteLine("----------------------------------------------->");
+                    readKey = Console.ReadKey(false).Key;
+                } while (readKey != ConsoleKey.F10 && readKey != ConsoleKey.Q && readKey.ToString() != "q");
+            }
+            else
+            {
+                Console.WriteLine("Сьогоднi ми не працюємо! Вихiдний!!!");
+            }
+
+            #endregion
             #region Lab5
 
-            ResearchTeam researchTeam = new ResearchTeam();
-            Paper paper = new Paper();
-            Person person = new Person("PERSON","SURNAME",new DateTime(2018,11,12));
+            //ResearchTeam researchTeam = new ResearchTeam();
+            //Paper paper = new Paper();
+            //Person person = new Person("PERSON","SURNAME",new DateTime(2018,11,12));
 
-            researchTeam.AddPersons(person);
-            researchTeam.AddPersons(person);
-            researchTeam.AddPapers(paper);
+            //researchTeam.AddPersons(person);
+            //researchTeam.AddPersons(person);
+            //researchTeam.AddPapers(paper);
 
-            var deepCopy = DeepCopy<ResearchTeam>(researchTeam);
+            //var deepCopy = DeepCopy<ResearchTeam>(researchTeam);
 
-            researchTeam.Name = "a";
-            Console.WriteLine(researchTeam.Name);
-            Console.WriteLine(deepCopy.Name);
+            //researchTeam.Name = "a";
+            //Console.WriteLine(researchTeam.Name);
+            //Console.WriteLine(deepCopy.Name);
 
-            if (researchTeam.Save("TEST"))
-            {
-                Console.WriteLine("File is Saved");
-            }
-            ResearchTeam loadedObject = new ResearchTeam();
-            if (loadedObject.Load("TEST"))
-            {
-                Console.WriteLine("File is Readed");
-            }
+            //if (researchTeam.Save("TEST"))
+            //{
+            //    Console.WriteLine("File is Saved");
+            //}
+            //ResearchTeam loadedObject = new ResearchTeam();
+            //if (loadedObject.Load("TEST"))
+            //{
+            //    Console.WriteLine("File is Readed");
+            //}
 
-            ResearchTeam researchTeamStatic = new ResearchTeam();
-            ResearchTeam.Load("TEST",researchTeamStatic);
-            Console.WriteLine(researchTeamStatic);
-            ResearchTeam.Save("TEST2", deepCopy);
+            //ResearchTeam researchTeamStatic = new ResearchTeam();
+            //ResearchTeam.Load("TEST",researchTeamStatic);
+            //Console.WriteLine(researchTeamStatic);
+            //ResearchTeam.Save("TEST2", deepCopy);
 
-            researchTeam.AddPaperFromConsole();
-            researchTeam.Save("TEST2");
+            //researchTeam.AddPaperFromConsole();
+            //researchTeam.Save("TEST2");
             #endregion
             #region lab4
             //ResearchTeamCollection researchTeam1 = new ResearchTeamCollection();

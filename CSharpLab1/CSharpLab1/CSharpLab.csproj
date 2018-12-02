@@ -64,9 +64,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CoupleAttribute.cs" />
+    <Compile Include="Interfaces\IHasName.cs" />
     <Compile Include="Interfaces\INameAndCopy.cs" />
+    <Compile Include="ReflectionTask\InvalidCoupleArguments.cs" />
+    <Compile Include="ReflectionTask\Models\Book.cs" />
+    <Compile Include="ReflectionTask\Models\Botan.cs" />
+    <Compile Include="ReflectionTask\Models\Girl.cs" />
+    <Compile Include="ReflectionTask\Models\Human.cs" />
     <Compile Include="Models\Paper.cs" />
     <Compile Include="Models\Person.cs" />
+    <Compile Include="ReflectionTask\Models\PrettyGirl.cs" />
+    <Compile Include="ReflectionTask\Models\SmartGirl.cs" />
+    <Compile Include="ReflectionTask\Models\Student.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ResearchTeamCollection.cs" />
     <Compile Include="ResearchTeamComparer.cs" />
