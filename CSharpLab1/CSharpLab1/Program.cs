@@ -1,4 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Net.Mime;
+using System.Text;
+using System.Threading;
 using CSharpLab1.ReflectionTask;
 using CSharpLab1.ReflectionTask.Models;
 
@@ -50,49 +55,90 @@ namespace CSharpLab1.Models
         //    Console.WriteLine(args.ToString());
         //}
         #endregion
-        #region Lab6
-        
+
+        #region Lab7
+        public static StringBuilder Result { get; set; } = new StringBuilder();
+        public class Values
+        {
+            public FileInfo File { get; set; }
+            public string SearchString { get; set; }
+        }
+        public static void GetCountRepeatsInFile(object x)
+        {
+            int countPerform = 0;
+            int countRepeats = 0;
+            Values values = (Values)x;
+            using (StreamReader sr = values.File.OpenText())
+            {
+                string readLine = "";
+                int length = sr.ReadToEnd().Split('\n').Length;
+                sr.BaseStream.Position = 0;
+                while ((readLine = sr.ReadLine()) != null)
+                {
+                    if (readLine == values.SearchString)
+                        ++countRepeats;
+                    Console.WriteLine(values.File.Name + " perform " + (++countPerform * 100) / length + " %");
+                }
+            }
+            Result.Append(values.File.Name + " " + values.SearchString + " repeats " + countRepeats + " times\n");
+            Thread.Sleep(400);
+        }
         #endregion
         public static void Main(string[] args)
         {
+            #region Lab7
+            Values values = new Values();
+            DirectoryInfo directory = new DirectoryInfo(@"D:\Test");
+            FileInfo[] files = directory.GetFiles("*.txt");
+            string testString = "xuzzvadtpidbyjksrckagchobjbxtshk";
+            foreach (FileInfo file in files)
+            {
+                values.File = file;
+                values.SearchString = testString;
+                Thread myThread = new Thread(new ParameterizedThreadStart(GetCountRepeatsInFile));
+                myThread.Start(values);
+                myThread.Join();
+            }
+            Console.WriteLine(Result.ToString());
+            #endregion
             #region Lab6
-            ConsoleKey readKey;
-            DateTime dateTime = DateTime.Now;
-            if (dateTime.DayOfWeek != DayOfWeek.Sunday)
-            {
-                Human human = new Human();
-                Human[] humans = {new Student(), new Botan(), new Girl(), new PrettyGirl(), new SmartGirl()};
-                do
-                {
-                    Console.WriteLine("<-----------------------------------------------");
-                    Random random = new Random();
-                    var firstIndex = random.Next(humans.Length);
-                    var secondIndex = random.Next(humans.Length);
+            //ConsoleKey readKey;
+            //DateTime dateTime = DateTime.Now;
+            //if (dateTime.DayOfWeek != DayOfWeek.Sunday)
+            //{
+            //    Human human = new Human();
+            //    Human[] humans = { new Student(), new Botan(), new Girl(), new PrettyGirl(), new SmartGirl() };
+            //    do
+            //    {
+            //        Console.WriteLine("<-----------------------------------------------");
+            //        Random random = new Random();
+            //        var firstIndex = random.Next(humans.Length);
+            //        var secondIndex = random.Next(humans.Length);
 
-                    Console.WriteLine("First instance: " + humans[firstIndex].GetType().Name);
-                    Console.WriteLine("Second instance: " + humans[secondIndex].GetType().Name + "\n");
-                    try
-                    {
-                        Human.ValidateCouple(humans[firstIndex], humans[secondIndex]);
-                    }
-                    catch (InvalidCoupleArguments e)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
+            //        Console.WriteLine("First instance: " + humans[firstIndex].GetType().Name);
+            //        Console.WriteLine("Second instance: " + humans[secondIndex].GetType().Name + "\n");
+            //        try
+            //        {
+            //            Human.ValidateCouple(humans[firstIndex], humans[secondIndex]);
+            //        }
+            //        catch (InvalidCoupleArguments e)
+            //        {
+            //            Console.WriteLine(e.Message);
+            //        }
 
-                    var child = human.Couple(humans[firstIndex], humans[secondIndex]);
+            //        var child = human.Couple(humans[firstIndex], humans[secondIndex]);
 
-                    Console.WriteLine("\nName: " + child.GetType().GetProperty("Name")?.GetValue(child));
-                    Console.WriteLine("Surname: " + child.GetType().GetProperty("Surname")?.GetValue(child));
-                    Console.WriteLine("ChildType: " + child);
-                    Console.WriteLine("----------------------------------------------->");
-                    readKey = Console.ReadKey(false).Key;
-                } while (readKey != ConsoleKey.F10 && readKey != ConsoleKey.Q && readKey.ToString() != "q");
-            }
-            else
-            {
-                Console.WriteLine("Сьогоднi ми не працюємо! Вихiдний!!!");
-            }
+            //        Console.WriteLine("\nName: " + child.GetType().GetProperty("Name")?.GetValue(child));
+            //        Console.WriteLine("Surname: " + child.GetType().GetProperty("Surname")?.GetValue(child));
+            //        Console.WriteLine("ChildType: " + child);
+            //        Console.WriteLine("----------------------------------------------->");
+            //        readKey = Console.ReadKey(false).Key;
+            //    } while (readKey != ConsoleKey.F10 && readKey != ConsoleKey.Q && readKey.ToString() != "q");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Сьогоднi ми не працюємо! Вихiдний!!!");
+            //}
 
             #endregion
             #region Lab5
